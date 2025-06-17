@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login_screen_title">Добро пожаловать!</string>
+    <string name="login_input_email">Логин или Email</string>
+    <string name="login_input_password">Пароль</string>
+    <string name="login_button_text">Войти</string>
+    <string name="error_invalid_credentials">Неверный логин или пароль</string>
+
+    <string name="connect_to_game_button">Присоединиться к игре</string>
+    <string name="create_room_button">Создать комнату</string>
+
+    <string name="label_main_menu">Игры для компании онлайн</string>
+    <string name="description_main_menu">Создайте команду мечты - в любое время, в любом месте! \nНаша платформа для онлайн-тимбилдинга открывает новые возможности для удаленных команд. Забудьте про одноразовые мероприятия! \nИграй, расти, побеждай — вместе, где бы вы ни находились!</string>
+</resources>
