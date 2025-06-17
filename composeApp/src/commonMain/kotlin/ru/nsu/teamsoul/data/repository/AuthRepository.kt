@@ -1,6 +1,6 @@
 package ru.nsu.teamsoul.data.repository
 
-import ru.nsu.teamsoul.data.remote.dto.UserDetailsResponseDto
+import ru.nsu.teamsoul.data.remote.dto.UserDetailsResponse
 
 
 interface AuthRepository {
@@ -9,5 +9,5 @@ interface AuthRepository {
 
     suspend fun isLoggedIn(): Boolean
 
-    suspend fun getUserDetails(): UserDetailsResponseDto?
+    suspend fun getUserDetails(): UserDetailsResponse?
 }

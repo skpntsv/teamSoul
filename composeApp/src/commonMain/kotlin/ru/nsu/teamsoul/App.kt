@@ -1,7 +1,8 @@
 package ru.nsu.teamsoul
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.SlideTransition
 import org.koin.compose.KoinApplication
 import ru.nsu.teamsoul.di.commonModule
 import ru.nsu.teamsoul.ui.theme.AppTheme
@@ -15,7 +16,9 @@ fun App() {
         }
     ) {
         AppTheme {
-            Navigator(SplashScreen())
+            Navigator(screen = SplashScreen) { navigator ->
+                SlideTransition(navigator)
+            }
         }
     }
 }

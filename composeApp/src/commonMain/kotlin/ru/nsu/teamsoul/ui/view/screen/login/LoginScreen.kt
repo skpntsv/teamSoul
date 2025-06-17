@@ -1,10 +1,28 @@
 package ru.nsu.teamsoul.ui.view.screen.login
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -12,10 +30,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 import ru.nsu.teamsoul.ui.components.AppHeader
 import ru.nsu.teamsoul.ui.components.ResponsiveLayout
 import ru.nsu.teamsoul.ui.theme.TeamSoulBlue
@@ -27,61 +45,69 @@ import teamsoul.composeapp.generated.resources.login_input_email
 import teamsoul.composeapp.generated.resources.login_input_password
 import teamsoul.composeapp.generated.resources.login_screen_title
 
-class LoginScreen : Screen {
+object LoginScreen : Screen {
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        val viewModel = koinScreenModel<LoginViewModel>()
-        val uiState by viewModel.uiState.collectAsState()
+        LoginScreen()
+    }
+}
 
-        LaunchedEffect(Unit) {
-            viewModel.events.collect { event ->
-                when (event) {
-                    is LoginEvent.NavigateToMain -> navigator.replaceAll(MainScreen())
-                }
-            }
-        }
 
-        Scaffold { paddingValues ->
-            Column(
-                modifier = Modifier.fillMaxSize().padding(paddingValues)
-            ) {
-                AppHeader()
-                ResponsiveLayout(
-                    modifier = Modifier.fillMaxSize().padding(horizontal = 32.dp),
-                    mobileContent = {
-                        LoginContent(
-                            uiState,
-                            viewModel::onIdentifierChange,
-                            viewModel::onPasswordChange,
-                            viewModel::login,
-                            true
-                        )
-                    },
-                    desktopContent = {
-                        Row(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(modifier = Modifier.weight(1f)) {
-                                // Image(painterResource("drawable/login_illustration.xml"), contentDescription = null)
-                                Spacer(modifier = Modifier.fillMaxSize(0.8f))
-                            }
-                            Box(modifier = Modifier.weight(1f)) {
-                                LoginContent(
-                                    uiState,
-                                    viewModel::onIdentifierChange,
-                                    viewModel::onPasswordChange,
-                                    viewModel::login,
-                                    false
-                                )
-                            }
-                        }
-                    }
-                )
+@Composable
+fun LoginScreen(
+    viewModel: LoginViewModel = koinInject()
+) {
+    val navigator = LocalNavigator.currentOrThrow
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is LoginEvent.NavigateToMain -> navigator.replaceAll(MainScreen)
             }
         }
     }
+
+    Scaffold { paddingValues ->
+        Column(
+            modifier = Modifier.fillMaxSize().padding(paddingValues)
+        ) {
+            AppHeader()
+            ResponsiveLayout(
+                modifier = Modifier.fillMaxSize().padding(horizontal = 32.dp),
+                mobileContent = {
+                    LoginContent(
+                        uiState,
+                        viewModel::onIdentifierChange,
+                        viewModel::onPasswordChange,
+                        viewModel::login,
+                        true
+                    )
+                },
+                desktopContent = {
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(modifier = Modifier.weight(1f)) {
+                            // Image(painterResource("drawable/login_illustration.xml"), contentDescription = null)
+                            Spacer(modifier = Modifier.fillMaxSize(0.8f))
+                        }
+                        Box(modifier = Modifier.weight(1f)) {
+                            LoginContent(
+                                uiState,
+                                viewModel::onIdentifierChange,
+                                viewModel::onPasswordChange,
+                                viewModel::login,
+                                false
+                            )
+                        }
+                    }
+                }
+            )
+        }
+    }
+
 }
 
 @Composable
@@ -100,7 +126,6 @@ private fun LoginContent(
         verticalArrangement = Arrangement.Center
     ) {
         if (isMobile) {
-            // Иллюстрация для мобильной версии
             Box(modifier = Modifier.fillMaxWidth(0.8f).height(200.dp)) {
                 // Image(painterResource("drawable/login_illustration.xml"), contentDescription = null)
                 Spacer(modifier = Modifier.fillMaxSize()) // Заглушка

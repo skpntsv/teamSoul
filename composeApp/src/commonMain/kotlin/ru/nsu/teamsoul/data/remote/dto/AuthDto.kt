@@ -4,19 +4,19 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class LoginRequestDto(
+data class LoginRequest(
     val identifier: String,
     val password: String
 )
 
 @Serializable
-data class AuthenticationResponseDto(
+data class AuthenticationResponse(
     @SerialName("access_token")
     val accessToken: String
 )
 
 @Serializable
-data class UserDetailsResponseDto(
+data class UserDetailsResponse(
     val id: Int,
     val login: String,
     val role: String // "user", "admin", "hr"

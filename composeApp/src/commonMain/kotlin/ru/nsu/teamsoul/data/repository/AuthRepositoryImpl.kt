@@ -1,14 +1,13 @@
 package ru.nsu.teamsoul.data.repository
 
 import io.ktor.client.plugins.ClientRequestException
-import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.HttpStatusCode
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.MissingFieldException
 import ru.nsu.teamsoul.data.local.AuthTokenRepository
 import ru.nsu.teamsoul.data.remote.api.AuthApi
-import ru.nsu.teamsoul.data.remote.dto.LoginRequestDto
-import ru.nsu.teamsoul.data.remote.dto.UserDetailsResponseDto
+import ru.nsu.teamsoul.data.remote.dto.LoginRequest
+import ru.nsu.teamsoul.data.remote.dto.UserDetailsResponse
 
 class AuthRepositoryImpl(
     private val authApi: AuthApi,
@@ -18,7 +17,7 @@ class AuthRepositoryImpl(
     @OptIn(ExperimentalSerializationApi::class)
     override suspend fun login(identifier: String, password: String): Boolean {
         return try {
-            val request = LoginRequestDto(identifier = identifier, password = password)
+            val request = LoginRequest(identifier = identifier, password = password)
             val response = authApi.login(request)
             tokenRepository.saveToken(response.accessToken)
             true
@@ -58,11 +57,11 @@ class AuthRepositoryImpl(
         }
     }
 
-    override suspend fun getUserDetails(): UserDetailsResponseDto? {
+    override suspend fun getUserDetails(): UserDetailsResponse? {
         return if (isLoggedIn()) {
             try {
                 authApi.validateToken()
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 null
             }
         } else {

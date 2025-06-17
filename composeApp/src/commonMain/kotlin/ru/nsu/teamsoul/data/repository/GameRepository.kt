@@ -1,4 +1,12 @@
 package ru.nsu.teamsoul.data.repository
 
-class GameRepository {
+import ru.nsu.teamsoul.data.remote.dto.GamePluginsResponse
+
+interface GameRepository {
+    suspend fun getGamesList(): Result<List<GamePluginsResponse>>
+    suspend fun createGameInstance(gameId: Long, roomId: Long): Result<String>
+
+    suspend fun createRoom(): Result<Int>
+    suspend fun joinRoom(roomId: String): Result<String>
+    suspend fun createGameInRoom(gameId: Int, roomId: Int): Result<String>
 }
