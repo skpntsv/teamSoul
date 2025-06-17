@@ -43,6 +43,7 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
+            implementation(compose.materialIconsExtended)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -54,6 +55,8 @@ kotlin {
             implementation(libs.kotlinx.datetime)
 
             implementation(libs.bundles.ktor)
+
+            api("io.github.kevinnzou:compose-webview-multiplatform:2.0.0")
 
             implementation(libs.kotlinx.serialization.json)
 

@@ -21,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -33,10 +34,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import org.koin.compose.koinInject
 import ru.nsu.teamsoul.data.remote.dto.GamePluginsResponse
+import ru.nsu.teamsoul.ui.view.screen.webview.GameWebViewScreen
 
-data class GameSelectionScreen(val roomId: Int) : Screen {
+data class GameSelectionScreen(val roomId: Long) : Screen {
     @Composable
     override fun Content() {
         GameSelectionRoute(roomId = roomId)
@@ -45,22 +49,31 @@ data class GameSelectionScreen(val roomId: Int) : Screen {
 
 @Composable
 fun GameSelectionRoute(
-    roomId: Int,
+    roomId: Long,
     viewModel: GameSelectionViewModel = koinInject()
 ) {
+    val navigator = LocalNavigator.currentOrThrow
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // Показ тоста "Комната создана" один раз
     LaunchedEffect(Unit) {
         snackbarHostState.showSnackbar("Комната успешно создана. Приятной игры!")
     }
 
-    // Показ ошибок загрузки
     LaunchedEffect(uiState.error) {
         if (uiState.error != null) {
             snackbarHostState.showSnackbar(uiState.error!!)
             viewModel.onErrorShown()
+        }
+    }
+
+    LaunchedEffect(viewModel) {
+        viewModel.navigationEvents.collect { event ->
+            when (event) {
+                is GameSelectionNavigationEvent.NavigateToGameWebView -> {
+                    navigator.push(GameWebViewScreen(event.url))
+                }
+            }
         }
     }
 
@@ -77,14 +90,22 @@ fun GameSelectionRoute(
             if (uiState.isLoading) {
                 CircularProgressIndicator()
             } else {
-                GamesList(games = uiState.games, roomId = roomId)
+                GamesList(
+                    games = uiState.games,
+                    roomId = roomId,
+                    onStartGame = viewModel::startGame
+                )
             }
         }
     }
 }
 
 @Composable
-private fun GamesList(games: List<GamePluginsResponse>, roomId: Int) {
+private fun GamesList(
+    games: List<GamePluginsResponse>,
+    roomId: Long,
+    onStartGame: (gameId: Long, roomId: Long) -> Unit
+) {
     var showDialogForGame by remember { mutableStateOf<GamePluginsResponse?>(null) }
 
     LazyRow(
@@ -100,7 +121,8 @@ private fun GamesList(games: List<GamePluginsResponse>, roomId: Int) {
         GameDescriptionDialog(
             game = game,
             roomId = roomId,
-            onDismiss = { showDialogForGame = null }
+            onDismiss = { showDialogForGame = null },
+            onStartGame = onStartGame
         )
     }
 }
@@ -126,21 +148,21 @@ private fun GameCard(game: GamePluginsResponse, onClick: () -> Unit) {
 @Composable
 private fun GameDescriptionDialog(
     game: GamePluginsResponse,
-    roomId: Int,
-    onDismiss: () -> Unit
+    roomId: Long,
+    onDismiss: () -> Unit,
+    onStartGame: (gameId: Long, roomId: Long) -> Unit
 ) {
-    // TODO: Реализовать логику нажатия "Начать игру"
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(game.name) },
         text = { game.description?.let { Text(it) } },
         confirmButton = {
-            Button(onClick = { /* TODO: viewModel.startGame(game.id, roomId) */ }) {
+            Button(onClick = { onStartGame(game.id, roomId) }) {
                 Text("Начать игру")
             }
         },
         dismissButton = {
-            Button(onClick = onDismiss) {
+            TextButton(onClick = onDismiss) {
                 Text("Отмена")
             }
         }

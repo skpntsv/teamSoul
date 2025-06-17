@@ -17,7 +17,8 @@ data class MainUiState(
 )
 
 sealed class MainNavigationEvent {
-    data class NavigateToGameSelection(val roomId: Int) : MainNavigationEvent()
+    data class NavigateToGameSelection(val roomId: Long) : MainNavigationEvent()
+    data class NavigateToGameWebView(val url: String, val roomId: String) : MainNavigationEvent()
 }
 
 class MainViewModel(
@@ -56,5 +57,22 @@ class MainViewModel(
 
     fun onErrorShown() {
         _uiState.update { it.copy(error = null) }
+    }
+
+    fun onJoinRoomConfirm(roomId: String) {
+        if (uiState.value.isLoading || roomId.isBlank()) return
+
+        screenModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null) }
+            gameRepository.joinRoom(roomId)
+                .onSuccess { url ->
+                    _navigationEvents.emit(MainNavigationEvent.NavigateToGameWebView(url, roomId))
+                    onJoinGameDialogDismiss()
+                }
+                .onFailure { exception ->
+                    _uiState.update { it.copy(error = exception.message) }
+                }
+            _uiState.update { it.copy(isLoading = false) }
+        }
     }
 }

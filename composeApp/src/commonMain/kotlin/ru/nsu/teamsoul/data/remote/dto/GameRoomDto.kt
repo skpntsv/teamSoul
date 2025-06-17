@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CreatedRoomDto(
-    val roomId: Int
+    val roomId: Long
 )
 
 @Serializable
@@ -19,6 +19,6 @@ data class UserConnectRequest(
 
 @Serializable
 data class CreateGameInRoomRequest(
-    val id: Int,
-    val roomId: Int
+    val id: Long,
+    val roomId: Long
 )

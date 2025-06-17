@@ -25,7 +25,7 @@ class GameRepositoryImpl(
             } else {
                 Result.failure(Exception("Произошла ошибка при загрузке игр"))
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             Result.failure(Exception("Произошла ошибка на сервере"))
         }
     }
@@ -42,12 +42,12 @@ class GameRepositoryImpl(
             } else {
                 Result.failure(Exception("Произошла ошибка при создании игры"))
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             Result.failure(Exception("Произошла ошибка на сервере"))
         }
     }
 
-    override suspend fun createRoom(): Result<Int> {
+    override suspend fun createRoom(): Result<Long> {
         return try {
             val createdRoom = gameRoomApi.createRoom()
             Result.success(createdRoom.roomId)
@@ -68,7 +68,7 @@ class GameRepositoryImpl(
         }
     }
 
-    override suspend fun createGameInRoom(gameId: Int, roomId: Int): Result<String> {
+    override suspend fun createGameInRoom(gameId: Long, roomId: Long): Result<String> {
         return try {
             val request = CreateGameInRoomRequest(id = gameId, roomId = roomId)
             val connectionInfo = gameRoomApi.createGameInRoom(request)

@@ -17,15 +17,19 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,6 +47,7 @@ import ru.nsu.teamsoul.ui.theme.TeamSoulBlue
 import ru.nsu.teamsoul.ui.theme.TextPrimary
 import ru.nsu.teamsoul.ui.theme.TextSecondary
 import ru.nsu.teamsoul.ui.view.screen.gameselection.GameSelectionScreen
+import ru.nsu.teamsoul.ui.view.screen.webview.GameWebViewScreen
 import teamsoul.composeapp.generated.resources.Res
 import teamsoul.composeapp.generated.resources.connect_to_game_button
 import teamsoul.composeapp.generated.resources.create_room_button
@@ -58,7 +63,7 @@ object MainScreen : Screen {
 }
 
 @Composable
-private fun MainScreen(
+fun MainScreen(
     viewModel: MainViewModel = koinInject()
 ) {
     val navigator = LocalNavigator.currentOrThrow
@@ -68,9 +73,11 @@ private fun MainScreen(
     LaunchedEffect(viewModel) {
         viewModel.navigationEvents.collect { event ->
             when (event) {
-                is MainNavigationEvent.NavigateToGameSelection -> {
+                is MainNavigationEvent.NavigateToGameSelection ->
                     navigator.push(GameSelectionScreen(event.roomId))
-                }
+
+                is MainNavigationEvent.NavigateToGameWebView ->
+                    navigator.push(GameWebViewScreen(event.url))
             }
         }
     }
@@ -108,7 +115,11 @@ private fun MainScreen(
     }
 
     if (uiState.showJoinGameDialog) {
-        JoinGameDialog(onDismiss = viewModel::onJoinGameDialogDismiss)
+        JoinGameDialog(
+            isLoading = uiState.isLoading,
+            onConfirm = viewModel::onJoinRoomConfirm,
+            onDismiss = viewModel::onJoinGameDialogDismiss
+        )
     }
 }
 
@@ -184,19 +195,46 @@ private fun MainContent(
 }
 
 @Composable
-private fun JoinGameDialog(onDismiss: () -> Unit) {
-    // TODO: Реализовать UI диалога для ввода кода комнаты
+private fun JoinGameDialog(
+    isLoading: Boolean,
+    onConfirm: (roomId: String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var roomCode by remember { mutableStateOf("") }
+
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Присоединиться к игре") },
-        text = { Text("Здесь будет поле для ввода кода комнаты.") },
+        title = { Text("Присоединение к игре") },
+        text = {
+            Column {
+                Text(
+                    "Для присоединения к игре Вам нужно ввести её код.",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(Modifier.height(16.dp))
+                OutlinedTextField(
+                    value = roomCode,
+                    onValueChange = { roomCode = it },
+                    label = { Text("Введите код") },
+                    singleLine = true,
+                    enabled = !isLoading
+                )
+            }
+        },
         confirmButton = {
-            Button(onClick = { /* TODO: Логика присоединения */ }) {
-                Text("Войти")
+            Button(
+                onClick = { onConfirm(roomCode) },
+                enabled = roomCode.isNotBlank() && !isLoading
+            ) {
+                if (isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.size(20.dp))
+                } else {
+                    Text("Присоединиться")
+                }
             }
         },
         dismissButton = {
-            Button(onClick = onDismiss) {
+            TextButton(onClick = onDismiss, enabled = !isLoading) {
                 Text("Отмена")
             }
         }
