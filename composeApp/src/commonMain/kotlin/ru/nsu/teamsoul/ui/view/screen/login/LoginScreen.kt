@@ -40,10 +40,10 @@ import ru.nsu.teamsoul.ui.theme.TeamSoulBlue
 import ru.nsu.teamsoul.ui.theme.TextPrimary
 import ru.nsu.teamsoul.ui.view.screen.main.MainScreen
 import teamsoul.composeapp.generated.resources.Res
-import teamsoul.composeapp.generated.resources.login_button_text
-import teamsoul.composeapp.generated.resources.login_input_email
-import teamsoul.composeapp.generated.resources.login_input_password
-import teamsoul.composeapp.generated.resources.login_screen_title
+import teamsoul.composeapp.generated.resources.login_button_signin
+import teamsoul.composeapp.generated.resources.login_field_label_identifier
+import teamsoul.composeapp.generated.resources.login_field_label_password
+import teamsoul.composeapp.generated.resources.login_title
 
 object LoginScreen : Screen {
     @Composable
@@ -134,7 +134,7 @@ private fun LoginContent(
         }
 
         Text(
-            text = stringResource(Res.string.login_screen_title),
+            text = stringResource(Res.string.login_title),
             style = MaterialTheme.typography.displaySmall,
             fontWeight = FontWeight.Bold,
             color = TextPrimary
@@ -144,7 +144,7 @@ private fun LoginContent(
         OutlinedTextField(
             value = uiState.identifier,
             onValueChange = onLoginChanged,
-            label = { Text(stringResource(Res.string.login_input_email)) },
+            label = { Text(stringResource(Res.string.login_field_label_identifier)) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             isError = uiState.error != null
@@ -153,7 +153,7 @@ private fun LoginContent(
         OutlinedTextField(
             value = uiState.password,
             onValueChange = onPasswordChanged,
-            label = { Text(stringResource(Res.string.login_input_password)) },
+            label = { Text(stringResource(Res.string.login_field_label_password)) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             isError = uiState.error != null,
@@ -177,7 +177,7 @@ private fun LoginContent(
             if (uiState.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
             } else {
-                Text(stringResource(Res.string.login_button_text))
+                Text(stringResource(Res.string.login_button_signin))
             }
         }
     }

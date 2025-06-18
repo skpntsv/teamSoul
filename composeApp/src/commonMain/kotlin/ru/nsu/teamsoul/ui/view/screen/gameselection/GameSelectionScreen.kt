@@ -1,5 +1,6 @@
 package ru.nsu.teamsoul.ui.view.screen.gameselection
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,9 +37,17 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import ru.nsu.teamsoul.data.remote.dto.GamePluginsResponse
 import ru.nsu.teamsoul.ui.view.screen.webview.GameWebViewScreen
+import teamsoul.composeapp.generated.resources.Res
+import teamsoul.composeapp.generated.resources.button_cancel
+import teamsoul.composeapp.generated.resources.game_description_dialog_button_start
+import teamsoul.composeapp.generated.resources.game_selection_snackbar_room_created
+import teamsoul.composeapp.generated.resources.game_selection_title
+import teamsoul.composeapp.generated.resources.img_card_game_logo
 
 data class GameSelectionScreen(val roomId: Long) : Screen {
     @Composable
@@ -56,8 +65,10 @@ fun GameSelectionRoute(
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val gameSnackBarTittle = stringResource(Res.string.game_selection_snackbar_room_created)
+
     LaunchedEffect(Unit) {
-        snackbarHostState.showSnackbar("Комната успешно создана. Приятной игры!")
+        snackbarHostState.showSnackbar(gameSnackBarTittle)
     }
 
     LaunchedEffect(uiState.error) {
@@ -84,7 +95,10 @@ fun GameSelectionRoute(
             modifier = Modifier.fillMaxSize().padding(paddingValues).padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Ваша комната: $roomId", style = MaterialTheme.typography.headlineSmall)
+            Text(
+                text = stringResource(Res.string.game_selection_title, roomId),
+                style = MaterialTheme.typography.headlineSmall
+            )
             Spacer(Modifier.height(32.dp))
 
             if (uiState.isLoading) {
@@ -140,7 +154,11 @@ private fun GameCard(game: GamePluginsResponse, onClick: () -> Unit) {
             Text(game.name, style = MaterialTheme.typography.headlineSmall)
             Spacer(Modifier.height(8.dp))
             game.description?.let { Text(it, maxLines = 5, overflow = TextOverflow.Ellipsis) }
-            // Image(painterResource(Res.drawable.card_game_logo), ... )
+            Image(
+                painterResource(Res.drawable.img_card_game_logo),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(1f)
+            )
         }
     }
 }
@@ -158,12 +176,12 @@ private fun GameDescriptionDialog(
         text = { game.description?.let { Text(it) } },
         confirmButton = {
             Button(onClick = { onStartGame(game.id, roomId) }) {
-                Text("Начать игру")
+                Text(stringResource(Res.string.game_description_dialog_button_start))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Отмена")
+                Text(stringResource(Res.string.button_cancel))
             }
         }
     )

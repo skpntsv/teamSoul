@@ -18,6 +18,10 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberWebViewState
+import org.jetbrains.compose.resources.stringResource
+import teamsoul.composeapp.generated.resources.Res
+import teamsoul.composeapp.generated.resources.button_cancel
+import teamsoul.composeapp.generated.resources.game_webview_title_loading
 
 data class GameWebViewScreen(val url: String) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -31,14 +35,17 @@ data class GameWebViewScreen(val url: String) : Screen {
                 TopAppBar(
                     title = {
                         Text(
-                            text = webViewState.pageTitle ?: "Загрузка игры...",
+                            text = webViewState.pageTitle ?: stringResource(Res.string.game_webview_title_loading),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                     },
                     navigationIcon = {
                         IconButton(onClick = { navigator.pop() }) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(Res.string.button_cancel)
+                            )
                         }
                     }
                 )

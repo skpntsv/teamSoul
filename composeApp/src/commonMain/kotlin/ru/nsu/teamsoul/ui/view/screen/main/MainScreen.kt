@@ -49,11 +49,16 @@ import ru.nsu.teamsoul.ui.theme.TextSecondary
 import ru.nsu.teamsoul.ui.view.screen.gameselection.GameSelectionScreen
 import ru.nsu.teamsoul.ui.view.screen.webview.GameWebViewScreen
 import teamsoul.composeapp.generated.resources.Res
-import teamsoul.composeapp.generated.resources.connect_to_game_button
-import teamsoul.composeapp.generated.resources.create_room_button
-import teamsoul.composeapp.generated.resources.description_main_menu
+import teamsoul.composeapp.generated.resources.button_cancel
 import teamsoul.composeapp.generated.resources.img_team_puzzle
-import teamsoul.composeapp.generated.resources.label_main_menu
+import teamsoul.composeapp.generated.resources.join_dialog_button_join
+import teamsoul.composeapp.generated.resources.join_dialog_description
+import teamsoul.composeapp.generated.resources.join_dialog_field_label_code
+import teamsoul.composeapp.generated.resources.join_dialog_title
+import teamsoul.composeapp.generated.resources.main_button_create_room
+import teamsoul.composeapp.generated.resources.main_button_join_room
+import teamsoul.composeapp.generated.resources.main_subtitle
+import teamsoul.composeapp.generated.resources.main_title
 
 object MainScreen : Screen {
     @Composable
@@ -133,7 +138,7 @@ private fun MainContent(
         modifier = Modifier.fillMaxWidth(),
     ) {
         Text(
-            text = stringResource(Res.string.label_main_menu),
+            text = stringResource(Res.string.main_title),
             style = MaterialTheme.typography.displaySmall,
             fontWeight = FontWeight.Bold,
             color = TextPrimary
@@ -142,7 +147,7 @@ private fun MainContent(
         Spacer(Modifier.height(16.dp))
 
         Text(
-            text = stringResource(Res.string.description_main_menu),
+            text = stringResource(Res.string.main_subtitle),
             style = MaterialTheme.typography.bodyLarge,
             color = TextSecondary,
             lineHeight = 24.sp
@@ -164,7 +169,7 @@ private fun MainContent(
                 border = BorderStroke(1.dp, TeamSoulBlue)
             ) {
                 Text(
-                    text = stringResource(Res.string.connect_to_game_button),
+                    text = stringResource(Res.string.main_button_join_room),
                     color = TeamSoulBlue
                 )
             }
@@ -186,7 +191,7 @@ private fun MainContent(
                     )
                 } else {
                     Text(
-                        text = stringResource(Res.string.create_room_button) // "Создать комнату"
+                        text = stringResource(Res.string.main_button_create_room)
                     )
                 }
             }
@@ -204,18 +209,18 @@ private fun JoinGameDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Присоединение к игре") },
+        title = { Text(stringResource(Res.string.join_dialog_title)) },
         text = {
             Column {
                 Text(
-                    "Для присоединения к игре Вам нужно ввести её код.",
+                    text = stringResource(Res.string.join_dialog_description),
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Spacer(Modifier.height(16.dp))
                 OutlinedTextField(
                     value = roomCode,
                     onValueChange = { roomCode = it },
-                    label = { Text("Введите код") },
+                    label = { Text(stringResource(Res.string.join_dialog_field_label_code)) },
                     singleLine = true,
                     enabled = !isLoading
                 )
@@ -229,13 +234,13 @@ private fun JoinGameDialog(
                 if (isLoading) {
                     CircularProgressIndicator(modifier = Modifier.size(20.dp))
                 } else {
-                    Text("Присоединиться")
+                    Text(stringResource(Res.string.join_dialog_button_join))
                 }
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss, enabled = !isLoading) {
-                Text("Отмена")
+                Text(stringResource(Res.string.button_cancel))
             }
         }
     )

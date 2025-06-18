@@ -16,9 +16,12 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import ru.nsu.teamsoul.ui.view.screen.login.LoginScreen
 import ru.nsu.teamsoul.ui.view.screen.main.MainScreen
+import teamsoul.composeapp.generated.resources.Res
+import teamsoul.composeapp.generated.resources.splash_title
 
 object SplashScreen : Screen {
     @Composable
@@ -45,7 +48,7 @@ fun SplashScreen(viewModel: SplashViewModel = koinInject()) {
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("TeamSoul")
+            Text(stringResource(Res.string.splash_title))
             Spacer(modifier = Modifier.height(16.dp))
             CircularProgressIndicator()
         }

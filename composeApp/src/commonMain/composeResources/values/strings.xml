@@ -1,14 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="login_screen_title">Добро пожаловать!</string>
-    <string name="login_input_email">Логин или Email</string>
-    <string name="login_input_password">Пароль</string>
-    <string name="login_button_text">Войти</string>
-    <string name="error_invalid_credentials">Неверный логин или пароль</string>
 
-    <string name="connect_to_game_button">Присоединиться</string>
-    <string name="create_room_button">Создать комнату</string>
+    <!-- Common strings -->
+    <string name="error_unknown">Произошла неизвестная ошибка. Попробуйте позже.</string>
+    <string name="button_cancel">Отмена</string>
+    <string name="button_back">Назад</string>
 
-    <string name="label_main_menu">Игры для компании онлайн</string>
-    <string name="description_main_menu">Создайте команду мечты - в любое время, в любом месте! \nНаша платформа для онлайн-тимбилдинга открывает новые возможности для удаленных команд. Забудьте про одноразовые мероприятия! \nИграй, расти, побеждай — вместе, где бы вы ни находились!</string>
+    <!-- SplashScreen   -->
+    <string name="splash_title">TeamSoul</string>
+
+    <!-- LoginScreen -->
+    <string name="login_title">Добро пожаловать!</string>
+    <string name="login_field_label_identifier">Логин или Email</string>
+    <string name="login_field_label_password">Пароль</string>
+    <string name="login_button_signin">Войти</string>
+    <string name="login_error_empty_fields">Логин и пароль не могут быть пустыми</string>
+    <string name="login_error_invalid_credentials">Неверный логин или пароль</string>
+
+    <!-- MainScreen -->
+    <string name="main_title">Игры для компании онлайн</string>
+    <string name="main_subtitle">Создайте команду мечты — в любое время, в любом месте! Наша платформа для онлайн-тимбилдинга открывает новые возможности для удаленных команд. Забудьте про одноразовые мероприятия! Играй, расти, побеждай — вместе, где бы вы ни находились!</string>
+    <string name="main_button_join_room">Присоединиться к игре</string>
+    <string name="main_button_create_room">Создать комнату</string>
+
+    <!-- JoinGameDialog -->
+    <string name="join_dialog_title">Присоединение к игре</string>
+    <string name="join_dialog_description">Для присоединения к игре Вам нужно ввести её код.</string>
+    <string name="join_dialog_field_label_code">Введите код</string>
+    <string name="join_dialog_button_join">Присоединиться</string>
+    <string name="join_dialog_error_failed_to_join">Не удалось подключиться к комнате</string>
+
+    <!-- GameSelectionScreen -->
+    <string name="game_selection_title">Ваша комната: %1$d</string>
+    <string name="game_selection_snackbar_room_created">Комната успешно создана. Приятной игры!</string>
+    <string name="game_selection_error_loading_games">Ошибка загрузки списка игр</string>
+
+    <!-- GameDescriptionDialog -->
+    <string name="game_description_dialog_button_start">Начать игру</string>
+
+    <!-- GameWebViewScreen -->
+    <string name="game_webview_title_loading">Загрузка игры...</string>
+
 </resources>
