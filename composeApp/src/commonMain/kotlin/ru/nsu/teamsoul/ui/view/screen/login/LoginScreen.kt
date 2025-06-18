@@ -1,10 +1,9 @@
 package ru.nsu.teamsoul.ui.view.screen.login
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,7 +24,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -35,9 +33,6 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import ru.nsu.teamsoul.ui.components.AppHeader
-import ru.nsu.teamsoul.ui.components.ResponsiveLayout
-import ru.nsu.teamsoul.ui.theme.TeamSoulBlue
-import ru.nsu.teamsoul.ui.theme.TextPrimary
 import ru.nsu.teamsoul.ui.view.screen.main.MainScreen
 import teamsoul.composeapp.generated.resources.Res
 import teamsoul.composeapp.generated.resources.login_button_signin
@@ -70,44 +65,21 @@ fun LoginScreen(
 
     Scaffold { paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(paddingValues)
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(horizontal = 24.dp)
         ) {
             AppHeader()
-            ResponsiveLayout(
-                modifier = Modifier.fillMaxSize().padding(horizontal = 32.dp),
-                mobileContent = {
-                    LoginContent(
-                        uiState,
-                        viewModel::onIdentifierChange,
-                        viewModel::onPasswordChange,
-                        viewModel::login,
-                        true
-                    )
-                },
-                desktopContent = {
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Box(modifier = Modifier.weight(1f)) {
-                            // Image(painterResource("drawable/login_illustration.xml"), contentDescription = null)
-                            Spacer(modifier = Modifier.fillMaxSize(0.8f))
-                        }
-                        Box(modifier = Modifier.weight(1f)) {
-                            LoginContent(
-                                uiState,
-                                viewModel::onIdentifierChange,
-                                viewModel::onPasswordChange,
-                                viewModel::login,
-                                false
-                            )
-                        }
-                    }
-                }
+            LoginContent(
+                uiState,
+                viewModel::onIdentifierChange,
+                viewModel::onPasswordChange,
+                viewModel::login
             )
         }
     }
-
 }
 
 @Composable
@@ -115,29 +87,21 @@ private fun LoginContent(
     uiState: LoginUiState,
     onLoginChanged: (String) -> Unit,
     onPasswordChanged: (String) -> Unit,
-    onLoginClick: () -> Unit,
-    isMobile: Boolean
+    onLoginClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .then(if (isMobile) Modifier.verticalScroll(rememberScrollState()) else Modifier),
-        horizontalAlignment = if (isMobile) Alignment.CenterHorizontally else Alignment.Start,
+            .fillMaxHeight()
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        if (isMobile) {
-            Box(modifier = Modifier.fillMaxWidth(0.8f).height(200.dp)) {
-                // Image(painterResource("drawable/login_illustration.xml"), contentDescription = null)
-                Spacer(modifier = Modifier.fillMaxSize()) // Заглушка
-            }
-            Spacer(Modifier.height(32.dp))
-        }
-
         Text(
             text = stringResource(Res.string.login_title),
             style = MaterialTheme.typography.displaySmall,
             fontWeight = FontWeight.Bold,
-            color = TextPrimary
+            color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(Modifier.height(32.dp))
 
@@ -150,6 +114,7 @@ private fun LoginContent(
             isError = uiState.error != null
         )
         Spacer(Modifier.height(16.dp))
+
         OutlinedTextField(
             value = uiState.password,
             onValueChange = onPasswordChanged,
@@ -168,16 +133,23 @@ private fun LoginContent(
             )
         }
         Spacer(Modifier.height(24.dp))
+
         Button(
             onClick = onLoginClick,
-            modifier = Modifier.fillMaxWidth().height(48.dp),
             enabled = !uiState.isLoading,
-            colors = ButtonDefaults.buttonColors(containerColor = TeamSoulBlue)
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary
+            ),
+            modifier = Modifier.fillMaxWidth()
         ) {
             if (uiState.isLoading) {
-                CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
+                CircularProgressIndicator(modifier = Modifier.size(24.dp))
             } else {
-                Text(stringResource(Res.string.login_button_signin))
+                Text(
+                    text = stringResource(Res.string.login_button_signin),
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
             }
         }
     }

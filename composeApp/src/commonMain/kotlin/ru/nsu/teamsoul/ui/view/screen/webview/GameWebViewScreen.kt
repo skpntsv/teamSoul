@@ -19,6 +19,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberWebViewState
 import org.jetbrains.compose.resources.stringResource
+import ru.nsu.teamsoul.ui.components.AppHeader
 import teamsoul.composeapp.generated.resources.Res
 import teamsoul.composeapp.generated.resources.button_cancel
 import teamsoul.composeapp.generated.resources.game_webview_title_loading
@@ -41,7 +42,7 @@ data class GameWebViewScreen(val url: String) : Screen {
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = { navigator.pop() }) {
+                        IconButton(onClick = { navigator.popAll() }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringResource(Res.string.button_cancel)
@@ -51,6 +52,7 @@ data class GameWebViewScreen(val url: String) : Screen {
                 )
             }
         ) { paddingValues ->
+            AppHeader()
             WebView(
                 state = webViewState,
                 modifier = Modifier.fillMaxSize().padding(paddingValues)

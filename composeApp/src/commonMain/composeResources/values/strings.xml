@@ -32,6 +32,7 @@
 
     <!-- GameSelectionScreen -->
     <string name="game_selection_title">Ваша комната: %1$d</string>
+    <string name="game_selection_choose_game">Выберите одну из доступных игр:</string>
     <string name="game_selection_snackbar_room_created">Комната успешно создана. Приятной игры!</string>
     <string name="game_selection_error_loading_games">Ошибка загрузки списка игр</string>
 

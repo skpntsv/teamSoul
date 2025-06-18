@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,8 +33,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
@@ -43,9 +44,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import ru.nsu.teamsoul.ui.components.AppHeader
-import ru.nsu.teamsoul.ui.theme.TeamSoulBlue
-import ru.nsu.teamsoul.ui.theme.TextPrimary
-import ru.nsu.teamsoul.ui.theme.TextSecondary
 import ru.nsu.teamsoul.ui.view.screen.gameselection.GameSelectionScreen
 import ru.nsu.teamsoul.ui.view.screen.webview.GameWebViewScreen
 import teamsoul.composeapp.generated.resources.Res
@@ -141,7 +139,7 @@ private fun MainContent(
             text = stringResource(Res.string.main_title),
             style = MaterialTheme.typography.displaySmall,
             fontWeight = FontWeight.Bold,
-            color = TextPrimary
+            color = MaterialTheme.colorScheme.primary
         )
 
         Spacer(Modifier.height(16.dp))
@@ -149,7 +147,7 @@ private fun MainContent(
         Text(
             text = stringResource(Res.string.main_subtitle),
             style = MaterialTheme.typography.bodyLarge,
-            color = TextSecondary,
+            color = MaterialTheme.colorScheme.secondary,
             lineHeight = 24.sp
         )
 
@@ -161,37 +159,46 @@ private fun MainContent(
         ) {
             OutlinedButton(
                 onClick = onJoinGameClicked,
-                modifier = Modifier
-                    .weight(1f)
-                    .height(48.dp),
                 enabled = !isLoading,
                 shape = MaterialTheme.shapes.medium,
-                border = BorderStroke(1.dp, TeamSoulBlue)
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.primary
+                ),
+                modifier = Modifier
+                    .weight(1f)
+                    .height(56.dp)
             ) {
                 Text(
                     text = stringResource(Res.string.main_button_join_room),
-                    color = TeamSoulBlue
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.titleSmall,
+                    textAlign = TextAlign.Center
                 )
             }
 
             Button(
                 onClick = onCreateRoomClicked,
-                modifier = Modifier
-                    .weight(1f)
-                    .height(48.dp),
                 enabled = !isLoading,
                 shape = MaterialTheme.shapes.medium,
-                colors = ButtonDefaults.buttonColors(containerColor = TeamSoulBlue)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ),
+                modifier = Modifier
+                    .weight(1f)
+                    .height(56.dp)
             ) {
                 if (isLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(24.dp),
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.primary,
                         strokeWidth = 2.dp
                     )
                 } else {
                     Text(
-                        text = stringResource(Res.string.main_button_create_room)
+                        text = stringResource(Res.string.main_button_create_room),
+                        style = MaterialTheme.typography.titleSmall,
+                        textAlign = TextAlign.Center
                     )
                 }
             }
@@ -209,12 +216,17 @@ private fun JoinGameDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(Res.string.join_dialog_title)) },
+        title = {
+            Text(
+                text = stringResource(Res.string.join_dialog_title),
+                style = MaterialTheme.typography.headlineMedium,
+            )
+        },
         text = {
             Column {
                 Text(
                     text = stringResource(Res.string.join_dialog_description),
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyLarge
                 )
                 Spacer(Modifier.height(16.dp))
                 OutlinedTextField(
@@ -234,13 +246,20 @@ private fun JoinGameDialog(
                 if (isLoading) {
                     CircularProgressIndicator(modifier = Modifier.size(20.dp))
                 } else {
-                    Text(stringResource(Res.string.join_dialog_button_join))
+                    Text(
+                        text = stringResource(Res.string.join_dialog_button_join),
+                        style = MaterialTheme.typography.titleMedium
+                    )
                 }
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss, enabled = !isLoading) {
-                Text(stringResource(Res.string.button_cancel))
+                Text(
+                    text = stringResource(Res.string.button_cancel),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
         }
     )

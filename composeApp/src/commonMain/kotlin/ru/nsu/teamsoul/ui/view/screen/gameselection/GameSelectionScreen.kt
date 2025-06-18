@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -41,10 +42,12 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import ru.nsu.teamsoul.data.remote.dto.GamePluginsResponse
+import ru.nsu.teamsoul.ui.components.AppHeader
 import ru.nsu.teamsoul.ui.view.screen.webview.GameWebViewScreen
 import teamsoul.composeapp.generated.resources.Res
 import teamsoul.composeapp.generated.resources.button_cancel
 import teamsoul.composeapp.generated.resources.game_description_dialog_button_start
+import teamsoul.composeapp.generated.resources.game_selection_choose_game
 import teamsoul.composeapp.generated.resources.game_selection_snackbar_room_created
 import teamsoul.composeapp.generated.resources.game_selection_title
 import teamsoul.composeapp.generated.resources.img_card_game_logo
@@ -92,15 +95,23 @@ fun GameSelectionRoute(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(paddingValues).padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(horizontal = 24.dp),
         ) {
+            AppHeader()
             Text(
                 text = stringResource(Res.string.game_selection_title, roomId),
-                style = MaterialTheme.typography.headlineSmall
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.headlineSmall,
             )
-            Spacer(Modifier.height(32.dp))
-
+            Text(
+                text = stringResource(Res.string.game_selection_choose_game),
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(vertical = 16.dp)
+            )
             if (uiState.isLoading) {
                 CircularProgressIndicator()
             } else {
@@ -151,9 +162,18 @@ private fun GameCard(game: GamePluginsResponse, onClick: () -> Unit) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(game.name, style = MaterialTheme.typography.headlineSmall)
+            Text(
+                text = game.name,
+                style = MaterialTheme.typography.headlineSmall
+            )
             Spacer(Modifier.height(8.dp))
-            game.description?.let { Text(it, maxLines = 5, overflow = TextOverflow.Ellipsis) }
+            game.description?.let {
+                Text(
+                    text = it,
+                    maxLines = 5,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
             Image(
                 painterResource(Res.drawable.img_card_game_logo),
                 contentDescription = null,
@@ -172,16 +192,35 @@ private fun GameDescriptionDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(game.name) },
-        text = { game.description?.let { Text(it) } },
+        title = {
+            Text(
+                text = game.name,
+                style = MaterialTheme.typography.headlineMedium
+            )
+        },
+        text = {
+            game.description?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
+        },
         confirmButton = {
             Button(onClick = { onStartGame(game.id, roomId) }) {
-                Text(stringResource(Res.string.game_description_dialog_button_start))
+                Text(
+                    text = stringResource(Res.string.game_description_dialog_button_start),
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(Res.string.button_cancel))
+                Text(
+                    text = stringResource(Res.string.button_cancel),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
         }
     )
