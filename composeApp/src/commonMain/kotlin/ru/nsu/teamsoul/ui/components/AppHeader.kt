@@ -46,7 +46,7 @@ fun AppHeader(modifier: Modifier = Modifier) {
         Text(
             text = styledText,
             style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(horizontal = 32.dp, vertical = 8.dp)
+            modifier = Modifier.padding(horizontal = 2.dp, vertical = 8.dp)
         )
     }
 }

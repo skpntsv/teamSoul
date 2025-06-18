@@ -22,6 +22,7 @@ import ru.nsu.teamsoul.data.repository.GameRepository
 import ru.nsu.teamsoul.data.repository.GameRepositoryImpl
 import ru.nsu.teamsoul.ui.view.screen.gameselection.GameSelectionViewModel
 import ru.nsu.teamsoul.ui.view.screen.login.LoginViewModel
+import ru.nsu.teamsoul.ui.view.screen.main.MainHeaderViewModel
 import ru.nsu.teamsoul.ui.view.screen.main.MainViewModel
 import ru.nsu.teamsoul.ui.view.screen.splash.SplashViewModel
 
@@ -44,6 +45,9 @@ val commonModule = module {
     // ViewModels
     factoryOf(::SplashViewModel)
     factoryOf(::LoginViewModel)
+
     factoryOf(::MainViewModel)
+    factoryOf(::MainHeaderViewModel)
+
     factoryOf(::GameSelectionViewModel)
 }

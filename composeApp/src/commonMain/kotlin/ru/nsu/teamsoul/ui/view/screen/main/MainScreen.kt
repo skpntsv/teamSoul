@@ -42,8 +42,9 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
-import ru.nsu.teamsoul.ui.components.AppHeader
 import ru.nsu.teamsoul.ui.view.screen.gameselection.GameSelectionScreen
+import ru.nsu.teamsoul.ui.view.screen.main.components.MainTopAppBar
+import ru.nsu.teamsoul.ui.view.screen.splash.SplashScreen
 import ru.nsu.teamsoul.ui.view.screen.webview.GameWebViewScreen
 import teamsoul.composeapp.generated.resources.Res
 import teamsoul.composeapp.generated.resources.button_cancel
@@ -66,7 +67,8 @@ object MainScreen : Screen {
 
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = koinInject()
+    viewModel: MainViewModel = koinInject(),
+    headerViewModel: MainHeaderViewModel = koinInject()
 ) {
     val navigator = LocalNavigator.currentOrThrow
     val uiState by viewModel.uiState.collectAsState()
@@ -91,9 +93,19 @@ fun MainScreen(
         }
     }
 
+    LaunchedEffect(headerViewModel) {
+        headerViewModel.navigationEvents.collect { event ->
+            when (event) {
+                MainHeaderNavigationEvent.NavigateToLogin -> {
+                    navigator.replaceAll(SplashScreen)
+                }
+            }
+        }
+    }
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = { AppHeader() }
+        topBar = { MainTopAppBar(viewModel = headerViewModel) }
     ) { paddingValues ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
