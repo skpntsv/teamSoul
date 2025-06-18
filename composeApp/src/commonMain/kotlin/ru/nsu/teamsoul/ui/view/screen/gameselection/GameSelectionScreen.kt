@@ -1,28 +1,40 @@
 package ru.nsu.teamsoul.ui.view.screen.gameselection
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -32,9 +44,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -59,6 +73,7 @@ data class GameSelectionScreen(val roomId: Long) : Screen {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameSelectionRoute(
     roomId: Long,
@@ -92,7 +107,24 @@ fun GameSelectionRoute(
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        topBar = {
+            TopAppBar(
+                title = { AppHeader() },
+                navigationIcon = {
+                    IconButton(
+                        onClick = { navigator.popAll() },
+                        modifier = Modifier.fillMaxWidth(0.1f)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(Res.string.button_cancel)
+                        )
+                    }
+                },
+                actions = { Spacer(Modifier.fillMaxWidth(0.1f)) }
+            )
+        },
     ) { paddingValues ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -101,7 +133,6 @@ fun GameSelectionRoute(
                 .padding(paddingValues)
                 .padding(horizontal = 24.dp),
         ) {
-            AppHeader()
             Text(
                 text = stringResource(Res.string.game_selection_title, roomId),
                 color = MaterialTheme.colorScheme.onSurface,
@@ -154,32 +185,53 @@ private fun GamesList(
 
 @Composable
 private fun GameCard(game: GamePluginsResponse, onClick: () -> Unit) {
-    Card(
+    Box(
         modifier = Modifier
-            .width(200.dp)
-            .height(250.dp)
-            .clickable(onClick = onClick),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            .width(270.dp)
+            .height(280.dp)
+            .clickable(onClick = onClick)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = game.name,
-                style = MaterialTheme.typography.headlineSmall
-            )
-            Spacer(Modifier.height(8.dp))
-            game.description?.let {
+        Card(
+            modifier = Modifier
+                .width(220.dp)
+                .height(240.dp)
+                .align(Alignment.Center),
+            shape = RoundedCornerShape(16.dp),
+            border = BorderStroke(2.dp, Color(0xFF4BEDFF)),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
                 Text(
-                    text = it,
-                    maxLines = 5,
-                    overflow = TextOverflow.Ellipsis
+                    text = game.name,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
                 )
+                Spacer(Modifier.height(8.dp))
+                game.description?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodyMedium,
+                        lineHeight = 20.sp,
+                        maxLines = 5,
+                        overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
-            Image(
-                painterResource(Res.drawable.img_card_game_logo),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(1f)
-            )
         }
+
+        Image(
+            painter = painterResource(Res.drawable.img_card_game_logo),
+            contentDescription = null,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .offset(x = 20.dp, y = 40.dp)
+                .size(200.dp)
+        )
     }
 }
 

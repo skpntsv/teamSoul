@@ -2,6 +2,7 @@ package ru.nsu.teamsoul.ui.view.screen.gameselection
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -41,6 +42,7 @@ class GameSelectionViewModel(
             _uiState.update { it.copy(isLoading = true, error = null) }
             gameRepository.createGameInRoom(gameId, roomId)
                 .onSuccess { url ->
+                    delay(2000L)
                     _navigationEvents.emit(GameSelectionNavigationEvent.NavigateToGameWebView(url))
                 }
                 .onFailure { exception ->
@@ -50,7 +52,7 @@ class GameSelectionViewModel(
         }
     }
 
-    fun loadGames() {
+    private fun loadGames() {
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             gameRepository.getGamesList()
